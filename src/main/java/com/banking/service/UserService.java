@@ -19,6 +19,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -120,12 +122,20 @@ public class UserService {
     }
 
     private UserDto mapToDto(User user) {
+        List<String> emails = user.getEmails().stream()
+                .map(EmailData::getEmail)
+                .collect(Collectors.toList());
+
+        List<String> phones = user.getPhones().stream()
+                .map(PhoneData::getPhone)
+                .collect(Collectors.toList());
+
         return new UserDto(
                 user.getId(),
                 user.getName(),
                 user.getDateOfBirth(),
-                user.getEmails().stream().map(EmailData::getEmail).toList(),
-                user.getPhones().stream().map(PhoneData::getPhone).toList()
+                emails,
+                phones
         );
     }
 } 
